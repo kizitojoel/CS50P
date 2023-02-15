@@ -77,8 +77,47 @@ def buy(currency, amount:int) -> None:
 Function for selling currency
 It is intuitively just 
 """
-def sell():
-    pass
+def sell(sell_currency:str, amount:int):
+    # Get the sum of each currency the user owns and store them in a dict
+    currency_list = example_quote
+    if sell_currency in currency_list["conversion_rates"]
+        with open("transactions.csv", "r") as f:
+            sum = 0
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row["currency"] == sell_currency:
+                    sum += int(row["quantity"])
+        # If the transaction is possible, carry out the transaction and store it in transactions.csv
+        balance = get_balance()
+        if sum >= amount:
+            with open("transactions.csv", "a") as file1:
+                fieldnames = ["date", "currency", "quantity", "rate",  "cost", "balance"]
+                writer = csv.DictWriter(file1, fieldnames=fieldnames)
+
+
+                #Get the current date as a string
+                current_date = datetime.now()
+                date_string = current_date.strftime("%H:%M--%d-%m-%Y")
+                rate = convert(sell_currency)
+                # I want the rate to show the amount I am dividing by, as that is more intuitive
+
+                #Call the convert function
+                writer.writerow(
+                    {
+                        "date": date_string,
+                        "currency": sell_currency,
+                        "quantity":-amount,
+                        "rate": rate,
+                        "cost": round(abs(amount / rate), 2),
+                        "balance": round(balance + abs(amount / rate), 2) 
+                    }
+                )
+        print("Sell transaction complete")
+        return 0
+    else:
+        print("Currency not found")
+        return 1
+    # Otherwise inform the user that he doesn't have enough currency
 
 def quote(base_currency):
     r = requests.get(f"https://v6.exchangerate-api.com/v6/{os.environ.get('API_KEY')}/latest/{base_currency}")
@@ -137,8 +176,9 @@ def convert(output, inverse=False): # The inverse optional parameter
         print(f"1 {example_quote['base_code']} is equal to {example_quote['conversion_rates'][output]} {output}")
         return example_quote["conversion_rates"][output]
 
-print(convert("KES", inverse=True))
-buy("USD", 10)
+
+print(convert("USD"))
+sell("GBP", 25)
 
 
 
