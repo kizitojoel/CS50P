@@ -6,10 +6,43 @@ import requests
 import os
 import json
 import csv
+from tabulate import tabulate
 from datetime import datetime
 # Function for the main program loop
 def main():
-    pass
+    # Assume the base currency is Kenyan because I'm Kenyan
+    base_currency = "KES"
+    action = get_option()
+    if action == "1": #Buying option
+        currency = input("What currency would you like to buy today? ")
+        amount = int(input(f"How many {currency} would you like to buy today? "))
+        buy(currency, amount)
+    elif action == "2": # Selling option
+        currency_list = example_quote
+        sell_currency = input("What currency would you like to sell today? ")
+        if sell_currency in currency_list["conversion_rates"]:
+            with open("transactions.csv", "r") as f:
+                sum = 0
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if row["currency"] == sell_currency:
+                        print(tabulate([row],  tablefmt = "github"))     
+        amount = int(input(f"How many {sell_currency} would you like to sell today? "))
+        sell(sell_currency, amount)
+    elif action == "3": # Quoting option
+        for key in example_quote["conversion_rates"]:
+            print(key, example_quote["conversion_rates"][key], sep=" | ")
+
+'''
+Initialiser function for the program
+'''
+def get_option():
+    option = input("What would you like to do today? \n1. Buy\n2. Sell\n3. Quote \n[Input 1, 2 or 3]\n")
+    if option not in ["1", "2", "3"]:
+        raise ValueError("Invalid option")
+        return
+    return option
+    
 
 # Should enable a user to begin with specific transactions
 def default_settings():
@@ -32,7 +65,6 @@ def get_balance():
     with open("transactions.csv", "r") as f:
         fieldnames = ["date", "currency", "quantity", "rate",  "cost", "balance"]
         reader = csv.DictReader(f, fieldnames=fieldnames)
-        print(reader)
         for row in reader:
             try:
                 cost = float(row["cost"])
@@ -40,7 +72,6 @@ def get_balance():
             except ValueError:
                 continue
     return sum
-
 
 def buy(currency, amount:int) -> None:
     # The variables this function will need, are the type and amount of currency the user is buying.
@@ -72,15 +103,13 @@ def buy(currency, amount:int) -> None:
             }
         )
         
-
 """
 Function for selling currency
-It is intuitively just 
 """
 def sell(sell_currency:str, amount:int):
     # Get the sum of each currency the user owns and store them in a dict
     currency_list = example_quote
-    if sell_currency in currency_list["conversion_rates"]
+    if sell_currency in currency_list["conversion_rates"]:
         with open("transactions.csv", "r") as f:
             sum = 0
             reader = csv.DictReader(f)
@@ -123,11 +152,6 @@ def quote(base_currency):
     r = requests.get(f"https://v6.exchangerate-api.com/v6/{os.environ.get('API_KEY')}/latest/{base_currency}")
     data = r.json()
     return data
-
-
-def record():
-    pass
-
 
 
 example_quote = {'result': 'success', 
@@ -177,8 +201,8 @@ def convert(output, inverse=False): # The inverse optional parameter
         return example_quote["conversion_rates"][output]
 
 
-print(convert("USD"))
-sell("GBP", 25)
+if __name__ == "__main__":
+    main()
 
 
 
