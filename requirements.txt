@@ -1,0 +1,7 @@
+pytest
+requests
+json
+csv
+tabulate
+datetime
+os

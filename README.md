@@ -7,6 +7,13 @@
 The goal of this project is to design a real time currency trading application to be run from the Command Line Interface. The API used is
 [Python Exchange Rate API](https://www.exchangerate-api.com/docs/python-currency-api) which generates exchange rates from the dollar to other currencies. Future updates will involve Graphical User Interfaces with the use of libraries like Tkinter or even Pygame. _To be explored_
 
+## Installation
+Ensure you have git installed.
+Open your terminal and run the following commands one after the other
+```
+git clone
+```
+
 ## Added Functionality
 The application is to have three main uses:
 - Buying
